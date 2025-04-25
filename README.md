@@ -27,7 +27,6 @@ Stranke pogosto težko najdejo prost termin za frizerske storitve, saj morajo kl
 - Personaliziran pristop: aplikacija pozna pretekle storitve in predlaga naslednje
 - Enostavno naročanje z nekaj kliki (ni potrebno klicanje ali čakanje)
 - Integracija z Instagram objavami za navdih
-- Možnost direktne prodaje frizerskih izdelkov
 
 ---
 

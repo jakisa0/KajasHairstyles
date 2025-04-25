@@ -1,0 +1,37 @@
+🎯 Glavne funkcionalnosti
+📅 Rezervacija termina (booking system)
+Stranka izbere datum, uro in frizerko (če jih je več).
+Izbere željeno storitev (npr. striženje, barvanje, prameni…).
+
+✂️ Izbor frizure / storitve
+Galerija s slikami različnih frizur ali opis storitev.
+Možnost dodajanja opombe (npr. “želim balayage kot na sliki #4”).
+
+👤 Uporabniški profil
+Registracija / prijava (Google, e-mail).
+Pregled preteklih in prihodnjih terminov.
+
+📷 Navdih (Inspiracija)
+Stranke lahko naložijo slike frizur, ki jih želijo.
+Frizerka lahko objavlja nove trende ali predloge (mini blog ali “wall”).
+
+📲 Obvestila
+Email ali SMS opomniki za termin (z uporabo npr. Twilio API ali Email API kot SendGrid).
+
+🔌 API-ji, ki jih lahko vključiš
+Calendar API (Google Calendar)
+Avtomatsko dodajanje termina v Google Koledar frizerke in/ali stranke.
+Location API (npr. Google Maps Embed API)
+Prikaz lokacije salona s povezavo do navigacije.
+Email/SMS Notification API
+Npr. SendGrid za email, Twilio za SMS.
+Image Upload API (npr. Cloudinary ali Firebase Storage)
+Za shranjevanje slik frizur, profilnih slik strank ipd.
+Stripe ali PayPal API
+Za spletno plačevanje vnaprej (če želiš dodati to možnost).
+
+🛠️ Admin Panel za frizerko
+Pregled vseh terminov.
+Dodajanje novih storitev in cen.
+Upravljanje uporabnikov in komentarjev.
+Možnost potrditve / zavrnitve termina.
