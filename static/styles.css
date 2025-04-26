@@ -1,0 +1,30 @@
+body {
+    background-image: url("/static/slike/ozadje.png");
+    background-size: 200px 200px;
+    background-repeat: repeat;
+}
+header{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background: linear-gradient(90deg, rgba(245, 245, 247, 0.8) 10%, rgba(249, 231, 236, 0.3 ) 100%);
+    gap: 40px;
+}
+
+header p{
+    display: flex;
+    color: white;
+}
+
+header button {
+    color: #99989c;
+    background-color: transparent;
+    border-color: hsla(255, 2%, 60%, 0.192);
+    padding: 20px 40px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+header button:hover{
+    border-color: hsla(255, 2%, 60%, 0.555);
+}
