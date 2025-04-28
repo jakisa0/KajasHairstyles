@@ -28,3 +28,12 @@ header button {
 header button:hover{
     border-color: hsla(255, 2%, 60%, 0.555);
 }
+
+header div a{
+    text-decoration: none;
+    color: #99989c
+}
+
+.prijava{
+    color:red
+}

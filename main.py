@@ -14,10 +14,32 @@ stranka = db.table('stranka')
 Uporabnik = Query()
 
 
-@app.route("/domov")
+@app.route("/")
 def domov():
     return render_template("domov.html")
 
+@app.route("/rezervacija")
+def rezervacija():
+    return render_template("rezervacija.html")
+
+@app.route('/prijava', methods=['GET', 'POST'])
+def prijava():
+    if request.method == 'POST':
+        uporabnik = request.form['uporabnik']
+        geslo = request.form['geslo']
+        stranka = users.get(User.uporabnik == uporabnik)
+        
+        if stranka:
+            if stranka['geslo'] == geslo:
+                session['uporabnik'] = uporabnik
+                return jsonify({'success': True})
+            return jsonify({'success': False, 'error': 'Napačno geslo'})
+        
+        users.insert({'uporabnik': uporabnik, 'geslo': geslo})
+        session['uporabnik'] = uporabnik
+        return jsonify({'success': True})
+    
+    return render_template('prijava.html')
 
 if __name__ == "__main__":
     if not os.path.exists('templates'):
