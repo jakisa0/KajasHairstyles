@@ -15,8 +15,14 @@
             <button type="button" onclick="window.location.href='/kontakt'">Kontakt</button>
         </div>
         <div class="prijava">
-            <button type="button" onclick="window.location.href='/prijava'">Prijava/Registracija</a></button>
+            {% if 'uporabnik' in session %}
+                <p>Pozdravljen, {{ session['uporabnik'] }}!</p>
+                <a href="{{ url_for('odjava') }}">Odjava</a>
+            {% else %}
+                <a href="{{ url_for('prijava') }}">Prijava</a>
+            {% endif %}
         </div>
+
     </header>
 </body>
 </html>

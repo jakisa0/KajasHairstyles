@@ -20,6 +20,9 @@ def domov():
 
 @app.route("/rezervacija")
 def rezervacija():
+    if 'uporabnik' not in session:
+        return redirect(url_for('prijava'))
+    
     return render_template("rezervacija.html")
 
 @app.route('/prijava', methods=['GET', 'POST'])
@@ -27,19 +30,24 @@ def prijava():
     if request.method == 'POST':
         uporabnik = request.form['uporabnik']
         geslo = request.form['geslo']
-        stranka = users.get(User.uporabnik == uporabnik)
+        user = stranka.get(Uporabnik.username == uporabnik)
         
-        if stranka:
-            if stranka['geslo'] == geslo:
+        if user:
+            if user['password'] == geslo:
                 session['uporabnik'] = uporabnik
                 return jsonify({'success': True})
             return jsonify({'success': False, 'error': 'Napačno geslo'})
         
-        users.insert({'uporabnik': uporabnik, 'geslo': geslo})
+        stranka.insert({'username': uporabnik, 'password': geslo})
         session['uporabnik'] = uporabnik
         return jsonify({'success': True})
     
     return render_template('prijava.html')
+
+@app.route('/odjava')
+def odjava():
+    session.pop('uporabnik', None)
+    return redirect(url_for('domov'))
 
 if __name__ == "__main__":
     if not os.path.exists('templates'):

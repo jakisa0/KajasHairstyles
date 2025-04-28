@@ -34,6 +34,22 @@ header div a{
     color: #99989c
 }
 
-.prijava{
-    color:red
+div.prijava {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    color: red;
+}
+div.prijava a {
+    color: #99989c;
+    text-decoration: underline;
+    border-style: solid;
+    padding: 10px;
+    font-size: 120%;
+}
+div.prijava p{
+    color: #99989c;
+    font-size: 35px;
+    padding: 1px;
 }
