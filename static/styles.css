@@ -53,3 +53,45 @@ div.prijava p{
     font-size: 35px;
     padding: 1px;
 }
+
+h1{
+    color: #db8cf3;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #99989c;
+    font-size: 40px;
+}
+
+li{
+    font-size: 20px;
+}
+
+form{
+    background-color: #99989c6b;
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+form button{
+    color: #db8cf3;
+    padding: 10px 30px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+form label{
+    font-size: 19px;
+}
+
+form input{
+    font-size: 15px;
+}
+
+textarea {
+    width: 700px;
+    height: 200px;
+    resize: vertical;
+    padding: 10px;
+    font-size: 16px;
+}

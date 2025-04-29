@@ -12,7 +12,9 @@
         <div>
             <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</a></button>
             <button type="button" onclick="window.location.href='/onas'">O nas</button>
-            <button type="button" onclick="window.location.href='/kontakt'">Kontakt</button>
+            {% if session.get('admin') %}
+                <button type="button" onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
+            {% endif %}
         </div>
         <div class="prijava">
             {% if 'uporabnik' in session %}

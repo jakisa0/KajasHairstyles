@@ -7,6 +7,24 @@
     <title>Rezervacija termina</title>
 </head>
 <body>
-    
+    <header>
+        <a href="/"><img src="../static/slike/logoTransparent.png" height="150" alt="logo"></a>
+        <div>
+            <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</a></button>
+            <button type="button" onclick="window.location.href='/onas'">O nas</button>
+            {% if session.get('admin') %}
+                <button type="button" onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
+            {% endif %}
+        </div>
+        <div class="prijava">
+            {% if 'uporabnik' in session %}
+                <p>Pozdravljen, {{ session['uporabnik'] }}!</p>
+                <a href="{{ url_for('odjava') }}">Odjava</a>
+            {% else %}
+                <a href="{{ url_for('prijava') }}">Prijava</a>
+            {% endif %}
+        </div>
+
+    </header>
 </body>
 </html>

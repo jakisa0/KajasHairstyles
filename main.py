@@ -2,7 +2,7 @@
 #git config --global user.name jakakosir5@gmail.com
 #pip install tinydb flask
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory, flash, get_flashed_messages, session
 from tinydb import TinyDB, Query
 import os
 
@@ -12,6 +12,7 @@ app.secret_key = "skrivni_kljuc_123"
 db = TinyDB('KajasHairstyles.json')
 stranka = db.table('stranka')
 Uporabnik = Query()
+kontakt = db.table('kontakt')
 
 
 @app.route("/")
@@ -22,24 +23,56 @@ def domov():
 def rezervacija():
     if 'uporabnik' not in session:
         return redirect(url_for('prijava'))
-    
+
     return render_template("rezervacija.html")
+
+@app.route("/onas", methods=["GET", "POST"])
+def onas():
+    if request.method == "POST":
+        ime = request.form["ime"]
+        email = request.form["email"]
+        sporocilo = request.form["sporocilo"]
+
+        kontakt.insert({
+            "ime": ime,
+            "email": email,
+            "sporocilo": sporocilo
+        })
+
+        flash("Hvala za vaše sporočilo!")
+        return redirect(url_for('onas'))
+    
+    return render_template("onas.html")
+
+@app.route("/vsa-sporocila")
+def vsa_sporocila():
+    if session.get("admin"):
+        return jsonify(kontakt.all())
+    return "Dostop zavrnjen", 403
+
 
 @app.route('/prijava', methods=['GET', 'POST'])
 def prijava():
     if request.method == 'POST':
         uporabnik = request.form['uporabnik']
         geslo = request.form['geslo']
-        user = stranka.get(Uporabnik.username == uporabnik)
         
+        if uporabnik == "admin" and geslo == "123":
+            session['uporabnik'] = 'admin'
+            session['admin'] = True
+            return jsonify({'success': True})
+
+        user = stranka.get(Uporabnik.username == uporabnik)
         if user:
             if user['password'] == geslo:
                 session['uporabnik'] = uporabnik
+                session['admin'] = False
                 return jsonify({'success': True})
             return jsonify({'success': False, 'error': 'Napačno geslo'})
         
         stranka.insert({'username': uporabnik, 'password': geslo})
         session['uporabnik'] = uporabnik
+        session['admin'] = False
         return jsonify({'success': True})
     
     return render_template('prijava.html')
