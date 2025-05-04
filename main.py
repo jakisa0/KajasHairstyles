@@ -13,7 +13,7 @@ db = TinyDB('KajasHairstyles.json')
 stranka = db.table('stranka')
 Uporabnik = Query()
 kontakt = db.table('kontakt')
-
+termini = db.table("termini")
 
 @app.route("/")
 def domov():
@@ -23,8 +23,39 @@ def domov():
 def rezervacija():
     if 'uporabnik' not in session:
         return redirect(url_for('prijava'))
+    vsiTermini = termini.all()
+    koledarTermini = []
+        for t in vsiTermini:
+            datum = t["datum"]
+            for ura in t["ure"]:
+                koledarTermini.append({
+                    "title": ura,
+                    "start": f"{datum}T{ura}"
+                })
+    return render_template("rezervacija.html", termini=vsiTermini, koledarTermini=koledarTermini)
 
-    return render_template("rezervacija.html")
+
+@app.route("/rezerviraj", methods=["POST"])
+def rezerviraj():
+    if 'uporabnik' not in session:
+        return redirect(url_for('prijava'))
+
+    datum = request.form["datum"]
+    ura = request.form["ura"]
+
+    termin = termini.get(Query().datum == datum)
+    if termin and ura in termin["ure"]:
+        nove_ure = [u for u in termin["ure"] if u != ura]
+        if nove_ure:
+            termini.update({"ure": nove_ure}, Query().datum == datum)
+        else:
+            termini.remove(Query().datum == datum)
+
+        flash(f"Uspešno si rezerviral termin {datum} ob {ura}.")
+    else:
+        flash("Ta termin ni več na voljo.")
+
+    return redirect(url_for("rezervacija"))
 
 @app.route("/onas", methods=["GET", "POST"])
 def onas():
@@ -50,6 +81,24 @@ def vsa_sporocila():
         return jsonify(kontakt.all())
     return "Dostop zavrnjen", 403
 
+@app.route("/dodaj-termin", methods=["POST"])
+def dodaj_termin():
+    if not session.get("admin"):
+        return "Dostop zavrnjen", 403
+
+    datum = request.form["datum"]
+    ure_raw = request.form["ure"]
+    ure = [u.strip() for u in ure_raw.split(",") if u.strip()]
+
+    #ce je datum ze notr, dodamo ure
+    obstojec = termini.get(Query().datum == datum)
+    if obstojec:
+        nove_ure = list(set(obstojec["ure"] + ure))
+        termini.update({"ure": nove_ure}, Query().datum == datum)
+    else:
+        termini.insert({"datum": datum, "ure": ure})
+
+    return redirect(url_for("rezervacija"))
 
 @app.route('/prijava', methods=['GET', 'POST'])
 def prijava():

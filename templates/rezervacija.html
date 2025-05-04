@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
     <title>Rezervacija termina</title>
 </head>
 <body>
     <header>
         <a href="/"><img src="../static/slike/logoTransparent.png" height="150" alt="logo"></a>
         <div>
-            <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</a></button>
+            <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</button>
             <button type="button" onclick="window.location.href='/onas'">O nas</button>
             {% if session.get('admin') %}
                 <button type="button" onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
@@ -24,7 +25,92 @@
                 <a href="{{ url_for('prijava') }}">Prijava</a>
             {% endif %}
         </div>
-
     </header>
+
+    <h1>Rezervacija termina</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="flash-messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% if session.get('admin') %}
+        <h2>Dodaj prost termin</h2>
+        <form method="POST" action="/dodaj-termin">
+            <label for="datum">Datum (YYYY-MM-DD):</label><br>
+            <input type="date" name="datum" required><br><br>
+
+            <label for="ure">Ure (ločene z vejico, npr. 10:00, 11:00):</label><br>
+            <input type="text" name="ure" required><br><br>
+
+            <button type="submit">Dodaj termin</button>
+        </form>
+    {% endif %}
+
+    <hr>
+
+    <h2>Prosti termini</h2>
+    {% for termin in termini %}
+        <h3>{{ termin.datum }}</h3>
+        <ul>
+            {% for ura in termin.ure %}
+                <li>{{ ura }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Ni prostih terminov.</p>
+    {% endfor %}
+
+    {% if not session.get('admin') %}
+        <h2>Rezerviraj termin</h2>
+        <form method="POST" action="/rezerviraj">
+            <label for="datum">Izberi datum:</label>
+            <select name="datum" required>
+                {% for termin in termini %}
+                    <option value="{{ termin.datum }}">{{ termin.datum }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="ura">Izberi uro:</label>
+            <select name="ura" required>
+                {% for termin in termini %}
+                    {% for ura in termin.ure %}
+                        <option value="{{ ura }}">{{ ura }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select><br><br>
+
+            <button type="submit">Rezerviraj</button>
+        </form>
+    {% endif %}
+
+    <hr>
+
+    
+    <h2>Koledar prostih terminov</h2>
+    <div id="koledar"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('koledar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'sl',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: {{ koledarTermini | tojson }}
+            });
+            calendar.render();
+        });
+    </script>
 </body>
 </html>
