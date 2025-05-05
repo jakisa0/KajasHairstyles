@@ -23,15 +23,16 @@ def domov():
 def rezervacija():
     if 'uporabnik' not in session:
         return redirect(url_for('prijava'))
+    
     vsiTermini = termini.all()
     koledarTermini = []
-        for t in vsiTermini:
-            datum = t["datum"]
-            for ura in t["ure"]:
-                koledarTermini.append({
-                    "title": ura,
-                    "start": f"{datum}T{ura}"
-                })
+    for t in vsiTermini:
+        datum = t["datum"]
+        for ura in t["ure"]:
+            koledarTermini.append({
+                "title": ura,
+                "start": f"{datum}T{ura}"
+            })
     return render_template("rezervacija.html", termini=vsiTermini, koledarTermini=koledarTermini)
 
 

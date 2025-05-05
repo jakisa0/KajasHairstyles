@@ -58,7 +58,14 @@ h1{
     color: #db8cf3;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: #99989c;
-    font-size: 40px;
+    font-size: 50px;
+}
+
+h2{
+    color: #db8cf3;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #99989c;
+    font-size: 30px;
 }
 
 li{
@@ -81,11 +88,15 @@ form button{
 }
 
 form label{
-    font-size: 19px;
+    font-size: 22px;
 }
 
 form input{
     font-size: 15px;
+}
+
+select{
+    font-size: 20px;
 }
 
 textarea {
@@ -99,4 +110,8 @@ textarea {
 #koledar {
     max-width: 900px;
     margin: 40px auto;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    height: 600px;
 }

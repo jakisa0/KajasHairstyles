@@ -28,6 +28,26 @@
     </header>
 
     <h1>Rezervacija termina</h1>
+    <h2>Koledar prostih terminov</h2>
+    <div id="koledar"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('koledar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'sl',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: {{ koledarTermini | tojson | safe }}
+            });
+            calendar.render();
+        });
+    </script>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -88,29 +108,5 @@
             <button type="submit">Rezerviraj</button>
         </form>
     {% endif %}
-
-    <hr>
-
-    
-    <h2>Koledar prostih terminov</h2>
-    <div id="koledar"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('koledar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'sl',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: {{ koledarTermini | tojson }}
-            });
-            calendar.render();
-        });
-    </script>
 </body>
 </html>
