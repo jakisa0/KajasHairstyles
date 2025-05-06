@@ -28,11 +28,17 @@ def rezervacija():
     koledarTermini = []
     for t in vsiTermini:
         datum = t["datum"]
-        for ura in t["ure"]:
+        ure = t["ure"]
+        
+        if isinstance(ure, str):
+            ure = [u.strip() for u in ure.split(",") if u.strip()]
+
+        for ura in ure:
             koledarTermini.append({
                 "title": ura,
                 "start": f"{datum}T{ura}"
             })
+
     return render_template("rezervacija.html", termini=vsiTermini, koledarTermini=koledarTermini)
 
 
@@ -55,6 +61,27 @@ def rezerviraj():
         flash(f"Uspešno si rezerviral termin {datum} ob {ura}.")
     else:
         flash("Ta termin ni več na voljo.")
+
+    return redirect(url_for("rezervacija"))
+
+@app.route("/odstrani-termin", methods=["POST"])
+def odstrani_termin():
+    if not session.get("admin"):
+        return "Dostop zavrnjen", 403
+
+    datum = request.form["datum"]
+    ura = request.form["ura"]
+
+    termin = termini.get(Query().datum == datum)
+    if termin and ura in termin["ure"]:
+        nove_ure = [u for u in termin["ure"] if u != ura]
+        if nove_ure:
+            termini.update({"ure": nove_ure}, Query().datum == datum)
+        else:
+            termini.remove(Query().datum == datum)
+        flash(f"Termin {datum} ob {ura} je bil odstranjen.")
+    else:
+        flash("Termin ni bil najden.")
 
     return redirect(url_for("rezervacija"))
 

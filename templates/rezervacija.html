@@ -79,7 +79,16 @@
         <h3>{{ termin.datum }}</h3>
         <ul>
             {% for ura in termin.ure %}
-                <li>{{ ura }}</li>
+                <li>
+                    {{ ura }}
+                    {% if session.get('admin') %}
+                        <form method="POST" action="/odstrani-termin" style="display:inline;">
+                            <input type="hidden" name="datum" value="{{ termin.datum }}">
+                            <input type="hidden" name="ura" value="{{ ura }}">
+                            <button type="submit" onclick="return confirm('Si prepričan, da želiš odstraniti ta termin?')">🗑</button>
+                        </form>
+                    {% endif %}
+                </li>
             {% endfor %}
         </ul>
     {% else %}
@@ -90,23 +99,49 @@
         <h2>Rezerviraj termin</h2>
         <form method="POST" action="/rezerviraj">
             <label for="datum">Izberi datum:</label>
-            <select name="datum" required>
+            <select name="datum" id="datum-select" required>
                 {% for termin in termini %}
                     <option value="{{ termin.datum }}">{{ termin.datum }}</option>
                 {% endfor %}
             </select><br><br>
 
             <label for="ura">Izberi uro:</label>
-            <select name="ura" required>
-                {% for termin in termini %}
-                    {% for ura in termin.ure %}
-                        <option value="{{ ura }}">{{ ura }}</option>
-                    {% endfor %}
-                {% endfor %}
+            <select name="ura" id="ura-select" required>
+            
             </select><br><br>
 
             <button type="submit">Rezerviraj</button>
         </form>
+
+        <script>
+            const termini = {{ termini|tojson | safe }};
+            const datumSelect = document.getElementById('datum-select');
+            const uraSelect = document.getElementById('ura-select');
+
+            function posodobiUre() {
+                const izbranDatum = datumSelect.value;
+                const termin = termini.find(t => t.datum === izbranDatum);
+
+                uraSelect.innerHTML = '';
+
+                if (termin && termin.ure.length > 0) {
+                    termin.ure.forEach(ura => {
+                        const option = document.createElement('option');
+                        option.value = ura;
+                        option.textContent = ura;
+                        uraSelect.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.textContent = 'Ni prostih ur';
+                    option.disabled = true;
+                    uraSelect.appendChild(option);
+                }
+            }
+
+            datumSelect.addEventListener('change', posodobiUre);
+            document.addEventListener('DOMContentLoaded', posodobiUre);
+        </script>
     {% endif %}
 </body>
 </html>
