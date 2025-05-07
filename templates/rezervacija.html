@@ -15,6 +15,7 @@
             <button type="button" onclick="window.location.href='/onas'">O nas</button>
             {% if session.get('admin') %}
                 <button type="button" onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
+                <button type="button" onclick="window.location.href='/vse-rezervacije'">Vse rezervacije</button>
             {% endif %}
         </div>
         <div class="prijava">
@@ -47,6 +48,7 @@
             });
             calendar.render();
         });
+        
     </script>
 
     {% with messages = get_flashed_messages() %}
@@ -97,51 +99,102 @@
 
     {% if not session.get('admin') %}
         <h2>Rezerviraj termin</h2>
-        <form method="POST" action="/rezerviraj">
+        <form method="POST" action="/rezerviraj" onsubmit="return preveriObrazec();">
             <label for="datum">Izberi datum:</label>
-            <select name="datum" id="datum-select" required>
+            <select name="datum" id="datum" required>
                 {% for termin in termini %}
                     <option value="{{ termin.datum }}">{{ termin.datum }}</option>
                 {% endfor %}
             </select><br><br>
 
             <label for="ura">Izberi uro:</label>
-            <select name="ura" id="ura-select" required>
-            
+            <select name="ura" id="ura" required>
+                {% for termin in termini %}
+                    {% for ura in termin.ure %}
+                        <option data-datum="{{ termin.datum }}" value="{{ ura }}">{{ ura }}</option>
+                    {% endfor %}
+                {% endfor %}
             </select><br><br>
+
+            <label for="spol">Izberi vrsto striženja:</label>
+            <select name="spol" id="spol" required onchange="prikaziStile()">
+                <option value="">-- izberi --</option>
+                <option value="mosko">Moško</option>
+                <option value="zensko">Žensko</option>
+            </select><br><br>
+
+            <label for="stil">Izberi stil:</label>
+            <select name="stil" id="stil" required onchange="pokaziCeno()">
+                <option value="">-- najprej izberi vrsto --</option>
+            </select><br><br>
+
+            <p><strong>Cena:</strong> <span id="cena">-</span> €</p><br>
 
             <button type="submit">Rezerviraj</button>
         </form>
+    {% endif %}
 
-        <script>
-            const termini = {{ termini|tojson | safe }};
-            const datumSelect = document.getElementById('datum-select');
-            const uraSelect = document.getElementById('ura-select');
+    <script>
+        const stili = {
+            mosko: {
+                "Low Taper Fade": 15,
+                "Mid Fade": 17,
+                "Buzz Cut": 12,
+                "Classic Cut": 14
+            },
+            zensko: {
+                "Balayage": 50,
+                "Prameni": 45,
+                "Stopničke": 35,
+                "Keratinsko ravnanje": 60
+            }
+        };
 
-            function posodobiUre() {
-                const izbranDatum = datumSelect.value;
-                const termin = termini.find(t => t.datum === izbranDatum);
+        function prikaziStile() {
+            const spol = document.getElementById("spol").value;
+            const stilSelect = document.getElementById("stil");
+            stilSelect.innerHTML = '<option value="">-- izberi --</option>';
 
-                uraSelect.innerHTML = '';
-
-                if (termin && termin.ure.length > 0) {
-                    termin.ure.forEach(ura => {
-                        const option = document.createElement('option');
-                        option.value = ura;
-                        option.textContent = ura;
-                        uraSelect.appendChild(option);
-                    });
-                } else {
-                    const option = document.createElement('option');
-                    option.textContent = 'Ni prostih ur';
-                    option.disabled = true;
-                    uraSelect.appendChild(option);
+            if (spol && stili[spol]) {
+                for (const [ime, cena] of Object.entries(stili[spol])) {
+                    const option = document.createElement("option");
+                    option.value = ime;
+                    option.textContent = ime;
+                    stilSelect.appendChild(option);
                 }
             }
 
-            datumSelect.addEventListener('change', posodobiUre);
-            document.addEventListener('DOMContentLoaded', posodobiUre);
-        </script>
-    {% endif %}
+            document.getElementById("cena").innerText = "-";
+        }
+
+        function pokaziCeno() {
+            const spol = document.getElementById("spol").value;
+            const stil = document.getElementById("stil").value;
+            const cena = stili[spol]?.[stil] || "-";
+            document.getElementById("cena").innerText = cena;
+        }
+
+        document.getElementById("datum").addEventListener("change", function () {
+            const izbranDatum = this.value;
+            const uraSelect = document.getElementById("ura");
+            for (const option of uraSelect.options) {
+                option.style.display = option.dataset.datum === izbranDatum ? "block" : "none";
+            }
+            uraSelect.value = "";
+        });
+
+        function preveriObrazec() {
+            const datum = document.getElementById("datum").value;
+            const ura = document.getElementById("ura").value;
+            const spol = document.getElementById("spol").value;
+            const stil = document.getElementById("stil").value;
+            if (!datum || !ura || !spol || !stil) {
+                alert("Prosimo, izpolni vsa polja.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
 </body>
 </html>

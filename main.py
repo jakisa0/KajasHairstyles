@@ -14,6 +14,7 @@ stranka = db.table('stranka')
 Uporabnik = Query()
 kontakt = db.table('kontakt')
 termini = db.table("termini")
+rezervacije = db.table("rezervacije")
 
 @app.route("/")
 def domov():
@@ -49,6 +50,20 @@ def rezerviraj():
 
     datum = request.form["datum"]
     ura = request.form["ura"]
+    spol = request.form["spol"]
+    stil = request.form["stil"]
+
+    cene = {
+        "Low Taper Fade": 15,
+        "Mid Fade": 17,
+        "Buzz Cut": 12,
+        "Classic Cut": 14,
+        "Balayage": 50,
+        "Prameni": 45,
+        "Stopničke": 35,
+        "Keratinsko ravnanje": 60
+    }
+    cena = cene.get(stil, 0)
 
     termin = termini.get(Query().datum == datum)
     if termin and ura in termin["ure"]:
@@ -58,7 +73,16 @@ def rezerviraj():
         else:
             termini.remove(Query().datum == datum)
 
-        flash(f"Uspešno si rezerviral termin {datum} ob {ura}.")
+        rezervacije.insert({
+            "uporabnik": session.get("uporabnik"),
+            "datum": datum,
+            "ura": ura,
+            "spol": spol,
+            "stil": stil,
+            "cena": cena
+        })
+
+        flash(f"Uspešno si rezerviral termin {datum} ob {ura} za {spol} ({stil}) - {cena} €.")
     else:
         flash("Ta termin ni več na voljo.")
 
@@ -84,6 +108,14 @@ def odstrani_termin():
         flash("Termin ni bil najden.")
 
     return redirect(url_for("rezervacija"))
+
+@app.route("/vse-rezervacije")
+def vseRezervacije():
+    if not session.get("admin"):
+        return "Dostop zavrnjen", 403
+
+    vse = rezervacije.all()
+    return render_template("vseRezervacije.html", rezervacije=vse)
 
 @app.route("/onas", methods=["GET", "POST"])
 def onas():

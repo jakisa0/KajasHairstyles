@@ -2,9 +2,8 @@
 <html lang="sl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vse rezervacije</title>
     <link rel="stylesheet" href="../static/styles.css">
-    <title>Kajas Hairstyles</title>
 </head>
 <body>
     <header>
@@ -25,7 +24,31 @@
                 <a href="{{ url_for('prijava') }}">Prijava</a>
             {% endif %}
         </div>
-
     </header>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Uporabnik</th>
+                <th>Datum</th>
+                <th>Ura</th>
+                <th>Spol</th>
+                <th>Stil</th>
+                <th>Cena (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rezervacije %}
+            <tr>
+                <td>{{ r.uporabnik }}</td>
+                <td>{{ r.datum }}</td>
+                <td>{{ r.ura }}</td>
+                <td>{{ r.spol }}</td>
+                <td>{{ r.stil }}</td>
+                <td>{{ r.cena }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
