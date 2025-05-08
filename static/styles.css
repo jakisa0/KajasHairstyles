@@ -115,3 +115,72 @@ textarea {
     border: 1px solid #ccc;
     height: 600px;
 }
+
+.tabela-rezervacij {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tabela-rezervacij th,
+.tabela-rezervacij td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela-rezervacij th {
+    background-color: #f9b8d0;
+    color: #333;
+    font-weight: bold;
+}
+
+.tabela-rezervacij tr:hover {
+    background-color: #f3f3f3;
+}
+
+.tabela-rezervacij td:last-child {
+    text-align: right;
+    font-weight: bold;
+}
+
+.galerija {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    justify-content: center;
+}
+.galerija img {
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.rezerviraj-gumb {
+    background-color: #f48fb1;
+    color: white;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+.rezerviraj-gumb:hover {
+    background-color: #f06292;
+}
+
+.podnaslov {
+    font-size: 1.5rem;
+    color: #555;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    font-weight: 300;
+    font-style: italic;
+}
