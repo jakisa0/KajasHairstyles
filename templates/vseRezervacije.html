@@ -8,14 +8,16 @@
 <body>
     <header>
         <a href="/"><img src="../static/slike/logoTransparent.png" height="150" alt="logo"></a>
-        <div>
-            <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</a></button>
+        <nav>
+            <button type="button" onclick="window.location.href='/'">Domov</button>
+            <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</button>
             <button type="button" onclick="window.location.href='/onas'">O nas</button>
+            <button type="button" onclick="window.location.href='/blog'">Blog</button>
             {% if session.get('admin') %}
                 <button type="button" onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
                 <button type="button" onclick="window.location.href='/vse-rezervacije'">Vse rezervacije</button>
             {% endif %}
-        </div>
+        </nav>
         <div class="prijava">
             {% if 'uporabnik' in session %}
                 <p>Pozdravljen, {{ session['uporabnik'] }}!</p>

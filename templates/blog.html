@@ -35,7 +35,7 @@
                 <h2>{{ objava.naslov }}</h2>
                 <p><em>{{ objava.datum }}</em></p>
                 {% if objava.slika %}
-                    <img src="{{ url_for('static', filename=objava.slika.split('static/')[1]) }}" alt="Slika bloga" class="blog-slika">
+                    <img src="{{ url_for('static', filename=objava.slika.split('static/')[1]) }}" height=400px alt="Slika bloga" class="blog-slika">
                 {% endif %}
                 <p>{{ objava.vsebina }}</p>
                 <hr>

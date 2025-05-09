@@ -191,6 +191,24 @@ def odjava():
     session.pop('uporabnik', None)
     return redirect(url_for('domov'))
 
+@app.route("/blog")
+def blog():
+    objave = [
+        {
+            "naslov": "5 trendov frizur za poletje",
+            "datum": "2025-05-08",
+            "vsebina": "To poletje prevladujejo lahkotni sloji, balayage in krajše frizure...",
+            "slika": "static/slike/trend1.jpg"
+        },
+        {
+            "naslov": "Kako negovati barvane lase",
+            "datum": "2025-04-15",
+            "vsebina": "Uporabljaj šampon brez sulfatov, redno uporabljaj masko za barvane lase...",
+            "slika": ""
+        }
+    ]
+    return render_template("blog.html", objave=objave)
+
 if __name__ == "__main__":
     if not os.path.exists('templates'):
         os.makedirs('templates')
