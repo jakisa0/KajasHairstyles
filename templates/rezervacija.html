@@ -2,8 +2,10 @@
 <html lang="sl">
 <head>
     <meta charset="UTF-8">
-    <title>Blog - Kajas Hairstyles</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+    <title>Rezervacija termina</title>
 </head>
 <body>
     <header>
@@ -11,6 +13,7 @@
         <nav>
             <button type="button" onclick="window.location.href='/'">Domov</button>
             <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</button>
+            <button onclick="window.location.href='/slike'">Galerija</button>
             <button type="button" onclick="window.location.href='/onas'">O nas</button>
             <button type="button" onclick="window.location.href='/blog'">Blog</button>
             {% if session.get('admin') %}
@@ -28,19 +31,172 @@
         </div>
     </header>
 
-    <main>
-        <h1>Blog in novice</h1>
-        {% for objava in objave %}
-            <div class="blog-objava">
-                <h2>{{ objava.naslov }}</h2>
-                <p><em>{{ objava.datum }}</em></p>
-                {% if objava.slika %}
-                    <img src="{{ url_for('static', filename=objava.slika.split('static/')[1]) }}" alt="Slika bloga" class="blog-slika">
-                {% endif %}
-                <p>{{ objava.vsebina }}</p>
-                <hr>
-            </div>
+    <h1>Rezervacija termina</h1>
+    <h2>Koledar prostih terminov</h2>
+    <div id="koledar"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('koledar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'sl',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: {{ koledarTermini | tojson | safe }}
+            });
+            calendar.render();
+        });
+        
+    </script>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="flash-messages">
+        {% for message in messages %}
+        <li>{{ message }}</li>
         {% endfor %}
-    </main>
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% if session.get('admin') %}
+        <h2>Dodaj prost termin</h2>
+        <form method="POST" action="/dodaj-termin">
+            <label for="datum">Datum (YYYY-MM-DD):</label><br>
+            <input type="date" name="datum" required><br><br>
+
+            <label for="ure">Ure (ločene z vejico, npr. 10:00, 11:00):</label><br>
+            <input type="text" name="ure" required><br><br>
+
+            <button type="submit">Dodaj termin</button>
+        </form>
+    {% endif %}
+
+    <hr>
+
+    <h2>Prosti termini</h2>
+    {% for termin in termini %}
+        <h3>{{ termin.datum }}</h3>
+        <ul>
+            {% for ura in termin.ure %}
+                <li>
+                    {{ ura }}
+                    {% if session.get('admin') %}
+                        <form method="POST" action="/odstrani-termin" style="display:inline;">
+                            <input type="hidden" name="datum" value="{{ termin.datum }}">
+                            <input type="hidden" name="ura" value="{{ ura }}">
+                            <button type="submit" onclick="return confirm('Si prepričan, da želiš odstraniti ta termin?')">🗑</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Ni prostih terminov.</p>
+    {% endfor %}
+
+    {% if not session.get('admin') %}
+        <h2>Rezerviraj termin</h2>
+        <form method="POST" action="/rezerviraj" onsubmit="return preveriObrazec();">
+            <label for="datum">Izberi datum:</label>
+            <select name="datum" id="datum" required>
+                {% for termin in termini %}
+                    <option value="{{ termin.datum }}">{{ termin.datum }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="ura">Izberi uro:</label>
+            <select name="ura" id="ura" required>
+                {% for termin in termini %}
+                    {% for ura in termin.ure %}
+                        <option data-datum="{{ termin.datum }}" value="{{ ura }}">{{ ura }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select><br><br>
+
+            <label for="spol">Izberi vrsto striženja:</label>
+            <select name="spol" id="spol" required onchange="prikaziStile()">
+                <option value="">-- izberi --</option>
+                <option value="mosko">Moško</option>
+                <option value="zensko">Žensko</option>
+            </select><br><br>
+
+            <label for="stil">Izberi stil:</label>
+            <select name="stil" id="stil" required onchange="pokaziCeno()">
+                <option value="">-- najprej izberi vrsto --</option>
+            </select><br><br>
+
+            <p><strong>Cena:</strong> <span id="cena">-</span> €</p><br>
+
+            <button type="submit">Rezerviraj</button>
+        </form>
+    {% endif %}
+
+    <script>
+        const stili = {
+            mosko: {
+                "Low Taper Fade": 15,
+                "Mid Fade": 17,
+                "Buzz Cut": 12,
+                "Classic Cut": 14
+            },
+            zensko: {
+                "Balayage": 50,
+                "Prameni": 45,
+                "Stopničke": 35,
+                "Keratinsko ravnanje": 60
+            }
+        };
+
+        function prikaziStile() {
+            const spol = document.getElementById("spol").value;
+            const stilSelect = document.getElementById("stil");
+            stilSelect.innerHTML = '<option value="">-- izberi --</option>';
+
+            if (spol && stili[spol]) {
+                for (const [ime, cena] of Object.entries(stili[spol])) {
+                    const option = document.createElement("option");
+                    option.value = ime;
+                    option.textContent = ime;
+                    stilSelect.appendChild(option);
+                }
+            }
+
+            document.getElementById("cena").innerText = "-";
+        }
+
+        function pokaziCeno() {
+            const spol = document.getElementById("spol").value;
+            const stil = document.getElementById("stil").value;
+            const cena = stili[spol]?.[stil] || "-";
+            document.getElementById("cena").innerText = cena;
+        }
+
+        document.getElementById("datum").addEventListener("change", function () {
+            const izbranDatum = this.value;
+            const uraSelect = document.getElementById("ura");
+            for (const option of uraSelect.options) {
+                option.style.display = option.dataset.datum === izbranDatum ? "block" : "none";
+            }
+            uraSelect.value = "";
+        });
+
+        function preveriObrazec() {
+            const datum = document.getElementById("datum").value;
+            const ura = document.getElementById("ura").value;
+            const spol = document.getElementById("spol").value;
+            const stil = document.getElementById("stil").value;
+            if (!datum || !ura || !spol || !stil) {
+                alert("Prosimo, izpolni vsa polja.");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 </html>

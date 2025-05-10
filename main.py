@@ -195,19 +195,38 @@ def odjava():
 def blog():
     objave = [
         {
-            "naslov": "5 trendov frizur za poletje",
+            "naslov": "Trenutni trendi: frizure za pomlad/poletje 2025",
             "datum": "2025-05-08",
-            "vsebina": "To poletje prevladujejo lahkotni sloji, balayage in krajše frizure...",
-            "slika": "static/slike/trend1.jpg"
+            "vsebina": "V sezoni 2025 so v ospredju naravni videzi, sproščeni valovi in pastelni toni. Za moške so še vedno najbolj priljubljeni low taper fade in buzz cut, medtem ko ženske posegajo po pramenih in balayažu za sončen videz. Če razmišljaš o spremembi, zdaj je pravi čas! Rezerviraj svoj termin in svetovali ti bomo, kateri stil najbolje ustreza tvoji obliki obraza in teksturi las.",
+            "slika": "static/slike/trend.jpg"
         },
         {
-            "naslov": "Kako negovati barvane lase",
+            "naslov": "Nasveti za nego las po poletju",
             "datum": "2025-04-15",
-            "vsebina": "Uporabljaj šampon brez sulfatov, redno uporabljaj masko za barvane lase...",
-            "slika": ""
+            "vsebina": "Poletje lahko resno izsuši vaše lase – sonce, morska voda in klor vplivajo na zdravje las. V našem salonu priporočamo globinsko vlaženje in keratinsko nego po poletju, da lasem povrnemo sijaj in mehkobo. Priporočamo tudi redne konice, saj se razcepljeni lasje po poletju še hitreje lomijo. Ne pozabite na termično zaščito, če pogosto uporabljate likalnik ali sušilec!",
+            "slika": "static/slike/nega-barve.jpg"
         }
     ]
     return render_template("blog.html", objave=objave)
+
+@app.route("/slike")
+def slike():
+    base_path = os.path.join("static", "slike")
+    kategorije = ["kratki", "srednji", "dolgi", "moski", "zenske"]
+    slike_po_kategorijah = {}
+
+    for kategorija in kategorije:
+        pot = os.path.join(base_path, kategorija)
+        if os.path.exists(pot):
+            slike = [
+                f"slike/{kategorija}/{slika}"
+                for slika in os.listdir(pot)
+                if slika.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
+            ]
+            slike_po_kategorijah[kategorija.capitalize()] = slike
+
+    return render_template("slike.html", slike_po_kategorijah=slike_po_kategorijah)
+
 
 if __name__ == "__main__":
     if not os.path.exists('templates'):

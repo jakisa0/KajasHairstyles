@@ -184,3 +184,45 @@ textarea {
     font-weight: 300;
     font-style: italic;
 }
+
+.galerija-banner {
+    background: linear-gradient(to right, #d7eaf2, #c9e3ec);
+    text-align: center;
+    padding: 40px 0;
+}
+
+.galerija-banner h1 {
+    font-size: 48px;
+    letter-spacing: 6px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.filter-menu a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.filter-menu a:hover {
+    color: #007acc;
+}
+
+.slike-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.slike-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.slike-grid img:hover {
+    transform: scale(1.05);
+}

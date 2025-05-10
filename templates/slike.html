@@ -2,7 +2,7 @@
 <html lang="sl">
 <head>
     <meta charset="UTF-8">
-    <title>Blog - Kajas Hairstyles</title>
+    <title>Galerija - Kajas Hairstyles</title>
     <link rel="stylesheet" href="../static/styles.css">
 </head>
 <body>
@@ -28,18 +28,13 @@
             {% endif %}
         </div>
     </header>
-
     <main>
-        <h1>Blog in novice</h1>
-        {% for objava in objave %}
-            <div class="blog-objava">
-                <h2>{{ objava.naslov }}</h2>
-                <p><em>{{ objava.datum }}</em></p>
-                {% if objava.slika %}
-                    <img src="{{ url_for('static', filename=objava.slika.split('static/')[1]) }}" height=400px alt="Slika bloga" class="blog-slika">
-                {% endif %}
-                <p>{{ objava.vsebina }}</p>
-                <hr>
+        {% for kategorija, slike in slike_po_kategorijah.items() %}
+            <h2 id="{{ kategorija|lower }}">{{ kategorija }}</h2>
+            <div class="galerija">
+                {% for slika in slike %}
+                    <img src="{{ url_for('static', filename=slika.split('static/')[1]) }}" alt="{{ kategorija }}">
+                {% endfor %}
             </div>
         {% endfor %}
     </main>
