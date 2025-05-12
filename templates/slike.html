@@ -29,14 +29,37 @@
         </div>
     </header>
     <main>
-        {% for kategorija, slike in slike_po_kategorijah.items() %}
-            <h2 id="{{ kategorija|lower }}">{{ kategorija }}</h2>
-            <div class="galerija">
-                {% for slika in slike %}
-                    <img src="{{ url_for('static', filename=slika.split('static/')[1]) }}" alt="{{ kategorija }}">
-                {% endfor %}
-            </div>
+        <div class="filter-gumbi">
+            <button onclick="filtriraj('vse')">Vse</button>
+            <button onclick="filtriraj('kratki')">Kratki</button>
+            <button onclick="filtriraj('srednji')">Srednji</button>
+            <button onclick="filtriraj('dolgi')">Dolgi</button>
+            <button onclick="filtriraj('moski')">Moški</button>
+        </div>
+
+        {% for kategorija, slike in slikePoKategorijah.items() %}
+            <section class="kategorija" data-kategorija="{{ kategorija|lower }}">
+                <h2 id="{{ kategorija|lower }}">{{ kategorija }}</h2>
+                <div class="galerija-slike">
+                    {% for slika in slike %}
+                        <img src="{{ url_for('static', filename=slika) }}" alt="{{ kategorija }}">
+                    {% endfor %}
+                </div>
+            </section>
         {% endfor %}
     </main>
+
+    <script>
+        function filtriraj(kategorija) {
+            const vse = document.querySelectorAll('.kategorija');
+            vse.forEach(sec => {
+                if (kategorija === 'vse') {
+                    sec.style.display = 'block';
+                } else {
+                    sec.style.display = sec.dataset.kategorija === kategorija ? 'block' : 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

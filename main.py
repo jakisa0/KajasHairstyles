@@ -213,7 +213,7 @@ def blog():
 def slike():
     base_path = os.path.join("static", "slike")
     kategorije = ["kratki", "srednji", "dolgi", "moski", "zenske"]
-    slike_po_kategorijah = {}
+    slikePoKategorijah = {}
 
     for kategorija in kategorije:
         pot = os.path.join(base_path, kategorija)
@@ -223,9 +223,9 @@ def slike():
                 for slika in os.listdir(pot)
                 if slika.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
             ]
-            slike_po_kategorijah[kategorija.capitalize()] = slike
+            slikePoKategorijah[kategorija.capitalize()] = slike
 
-    return render_template("slike.html", slike_po_kategorijah=slike_po_kategorijah)
+    return render_template("slike.html", slikePoKategorijah=slikePoKategorijah)
 
 
 if __name__ == "__main__":

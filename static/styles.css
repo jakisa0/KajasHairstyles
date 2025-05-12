@@ -226,3 +226,50 @@ textarea {
 .slike-grid img:hover {
     transform: scale(1.05);
 }
+
+.galerija-slike {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.galerija-slike img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.galerija-slike img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.filter-gumbi {
+    text-align: center;
+    margin: 30px auto;
+}
+
+.filter-gumbi button {
+    background-color: #e08fbe;
+    color: white;
+    border: none;
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-gumbi button:hover {
+    background-color: #964d90;
+}
+
+.kategorija {
+    margin-bottom: 50px;
+}
