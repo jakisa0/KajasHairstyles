@@ -27,18 +27,26 @@ def rezervacija():
     
     vsiTermini = termini.all()
     koledarTermini = []
+
     for t in vsiTermini:
         datum = t["datum"]
         ure = t["ure"]
         
+        ureSeznam = []
         if isinstance(ure, str):
-            ure = [u.strip() for u in ure.split(",") if u.strip()]
+            ureRazdeljene = ure.split(",")
+            for u in ureRazdeljene:
+                u = u.strip()
+                if u:
+                    ureSeznam.append(u)
+        else:
+            ureSeznam = ure
 
-        for ura in ure:
-            koledarTermini.append({
-                "title": ura,
-                "start": f"{datum}T{ura}"
-            })
+        for ura in ureSeznam:
+            dogodek = {}
+            dogodek["title"] = ura
+            dogodek["start"] = datum + "T" + ura
+            koledarTermini.append(dogodek)
 
     return render_template("rezervacija.html", termini=vsiTermini, koledarTermini=koledarTermini)
 
@@ -63,13 +71,22 @@ def rezerviraj():
         "Stopničke": 35,
         "Keratinsko ravnanje": 60
     }
-    cena = cene.get(stil, 0)
+
+    if stil in cene:
+        cena = cene[stil]
+    else:
+        cena = 0
 
     termin = termini.get(Query().datum == datum)
     if termin and ura in termin["ure"]:
-        nove_ure = [u for u in termin["ure"] if u != ura]
-        if nove_ure:
-            termini.update({"ure": nove_ure}, Query().datum == datum)
+        stare_ure = termin["ure"]
+        noveUre = []
+        for u in stare_ure:
+            if u != ura:
+                noveUre.append(u)
+
+        if len(noveUre) > 0:
+            termini.update({"ure": noveUre}, Query().datum == datum)
         else:
             termini.remove(Query().datum == datum)
 
@@ -82,7 +99,7 @@ def rezerviraj():
             "cena": cena
         })
 
-        flash(f"Uspešno si rezerviral termin {datum} ob {ura} za {spol} ({stil}) - {cena} €.")
+        flash("Uspešno si rezerviral termin {} ob {} za {} ({}) - {} €.".format(datum, ura, spol, stil, cena))
     else:
         flash("Ta termin ni več na voljo.")
 
@@ -98,11 +115,17 @@ def odstrani_termin():
 
     termin = termini.get(Query().datum == datum)
     if termin and ura in termin["ure"]:
-        nove_ure = [u for u in termin["ure"] if u != ura]
-        if nove_ure:
-            termini.update({"ure": nove_ure}, Query().datum == datum)
+        stareUre = termin["ure"]
+        noveUre = []
+        for u in stareUre:
+            if u != ura:
+                noveUre.append(u)
+
+        if len(noveUre) > 0:
+            termini.update({"ure": noveUre}, Query().datum == datum)
         else:
             termini.remove(Query().datum == datum)
+
         flash(f"Termin {datum} ob {ura} je bil odstranjen.")
     else:
         flash("Termin ni bil najden.")
@@ -147,16 +170,28 @@ def dodaj_termin():
         return "Dostop zavrnjen", 403
 
     datum = request.form["datum"]
-    ure_raw = request.form["ure"]
-    ure = [u.strip() for u in ure_raw.split(",") if u.strip()]
+    ureRaw = request.form["ure"]
 
-    #ce je datum ze notr, dodamo ure
+    ure = []
+    razdeljeneUre = ureRaw.split(",")
+    for u in razdeljeneUre:
+        u = u.strip()
+        if u:
+            ure.append(u)
+
     obstojec = termini.get(Query().datum == datum)
+
     if obstojec:
-        nove_ure = list(set(obstojec["ure"] + ure))
-        termini.update({"ure": nove_ure}, Query().datum == datum)
+        zdruzeneUre = obstojec["ure"] + ure
+        noveUreSet = set(zdruzeneUre)
+        noveUre = list(noveUreSet)
+        termini.update({"ure": noveUre}, Query().datum == datum)
     else:
-        termini.insert({"datum": datum, "ure": ure})
+        novTermin = {
+            "datum": datum,
+            "ure": ure
+        }
+        termini.insert(novTermin)
 
     return redirect(url_for("rezervacija"))
 
@@ -211,22 +246,25 @@ def blog():
 
 @app.route("/slike")
 def slike():
-    base_path = os.path.join("static", "slike")
+    potBaza = os.path.join("static", "slike")
     kategorije = ["kratki", "srednji", "dolgi", "moski", "zenske"]
     slikePoKategorijah = {}
 
     for kategorija in kategorije:
-        pot = os.path.join(base_path, kategorija)
+        pot = os.path.join(potBaza, kategorija)
         if os.path.exists(pot):
-            slike = [
-                f"slike/{kategorija}/{slika}"
-                for slika in os.listdir(pot)
-                if slika.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
-            ]
-            slikePoKategorijah[kategorija.capitalize()] = slike
+            slike = []
+            datoteke = os.listdir(pot)
+            for slika in datoteke:
+                ime = slika.lower()
+                if ime.endswith(".png") or ime.endswith(".jpg") or ime.endswith(".jpeg") or ime.endswith(".webp"):
+                    pot_do_slike = "slike/" + kategorija + "/" + slika
+                    slike.append(pot_do_slike)
+
+            kljuc = kategorija.capitalize()
+            slikePoKategorijah[kljuc] = slike
 
     return render_template("slike.html", slikePoKategorijah=slikePoKategorijah)
-
 
 if __name__ == "__main__":
     if not os.path.exists('templates'):
