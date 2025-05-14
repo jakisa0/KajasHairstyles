@@ -1,5 +1,5 @@
 #git config --global user.name jakisa0
-#git config --global user.name jakakosir5@gmail.com
+#git config --global user.email jakakosir5@gmail.com
 #pip install tinydb flask
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory, flash, get_flashed_messages, session
