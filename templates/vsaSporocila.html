@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <title>Vsa sporočila</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <header>
+        <a href="/"><img src="../static/slike/logoTransparent.png" height="150" alt="logo"></a>
+        <nav>
+            <button type="button" onclick="window.location.href='/'">Domov</button>
+            <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</button>
+            <button onclick="window.location.href='/slike'">Galerija</button>
+            <button type="button" onclick="window.location.href='/onas'">O nas</button>
+            <button type="button" onclick="window.location.href='/blog'">Blog</button>
+            {% if session.get('admin') %}
+                <button type="button" onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
+                <button type="button" onclick="window.location.href='/vse-rezervacije'">Vse rezervacije</button>
+            {% endif %}
+        </nav>
+        <div class="prijava">
+            {% if 'uporabnik' in session %}
+                <p>Pozdravljen, {{ session['uporabnik'] }}!</p>
+                <a href="{{ url_for('odjava') }}">Odjava</a>
+            {% else %}
+                <a href="{{ url_for('prijava') }}">Prijava</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        {% if sporocila %}
+            <ul class="sporocila-lista">
+                {% for s in sporocila %}
+                    <li class="sporocilo">
+                        <p><strong>Ime:</strong> {{ s.ime }}</p>
+                        <p><strong>Email:</strong> {{ s.email }}</p>
+                        <p><strong>Sporočilo:</strong> {{ s.sporocilo }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Ni prejetih sporočil.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

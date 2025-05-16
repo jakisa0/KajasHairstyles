@@ -160,9 +160,11 @@ def onas():
 
 @app.route("/vsa-sporocila")
 def vsa_sporocila():
-    if session.get("admin"):
-        return jsonify(kontakt.all())
-    return "Dostop zavrnjen", 403
+    if not session.get("admin"):
+        return "Dostop zavrnjen", 403
+
+    sporocila = kontakt.all()
+    return render_template("vsaSporocila.html", sporocila=sporocila)
 
 @app.route("/dodaj-termin", methods=["POST"])
 def dodaj_termin():
