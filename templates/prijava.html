@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="../static/login.css">
-    <title>Prijava/Registracija</title>
+    <title>Prijava</title>
 </head>
 <body>
     <h1>Dobrodošli v<br>Kajas Hairstyles</h1>
@@ -13,11 +13,10 @@
     <div id="error-message" style="color: red; display: none;"></div>
     
     <div id="login-container">
-        <h2>Prijava ali Registracija</h2>
-        <p>Če račun še ne obstaja, se bo ustvaril nov.</p>
+        <h2>Prijava</h2>
         
         <div>
-            <label for="uporabnik">Uporabniško ime:</label>
+            <label for="uporabnik">Email ali Uporabniško ime:</label>
             <input type="text" id="uporabnik" required>
         </div>
         
@@ -27,23 +26,25 @@
         </div>
         
         <div>
-            <button onclick="prijavaAliRegistracija()">Prijava / Registracija</button>
+            <button onclick="posljiPrijavo()">Prijava</button>
         </div>
+        <p>Še nimaš računa? <a href="{{ url_for('registracija') }}">Registriraj se tukaj</a>.</p>
     </div>
     
     <script>
-        function prijavaAliRegistracija() {
+        function posljiPrijavo() {
             const uporabnik = document.getElementById('uporabnik').value.trim();
             const geslo = document.getElementById('geslo').value.trim();
             const errorMessage = document.getElementById('error-message');
+
             if (uporabnik === '' || geslo === '') {
                 errorMessage.textContent = 'Vnesite uporabniško ime in geslo!';
                 errorMessage.style.display = 'block';
                 return;
             }
-            
+
             errorMessage.style.display = 'none';
-			
+
             $.ajax({
                 url: '/prijava',
                 type: 'POST',
@@ -67,19 +68,18 @@
                 }
             });
         }
-        
+
         document.getElementById('uporabnik').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                prijavaAliRegistracija();
+                posljiPrijavo();
             }
         });
-        
+
         document.getElementById('geslo').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                prijavaAliRegistracija();
+                posljiPrijavo();
             }
         });
-        
     </script>
 </body>
 </html>

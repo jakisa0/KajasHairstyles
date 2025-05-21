@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="../static/login.css">
+    <title>Registracija</title>
+</head>
+<body>
+    <h1>Ustvari račun za<br>Kajas Hairstyles</h1>
+
+    <div id="error-message" style="color: red; display: none;"></div>
+    <div id="success-message" style="color: green; display: none;"></div>
+
+    <div id="login-container">
+        <h2>Registracija</h2>
+
+        <div>
+            <label for="uporabnik">Uporabniško ime:</label>
+            <input type="text" id="uporabnik" required>
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+        </div>
+        
+        <div>
+            <label for="geslo">Geslo:</label>
+            <input type="password" id="geslo" required>
+        </div>
+
+        <div>
+            <label for="potrdiGeslo">Potrdi geslo:</label>
+            <input type="password" id="potrdiGeslo" required>
+        </div>
+
+        <div>
+            <button onclick="posljiRegistracijo()">Registracija</button>
+        </div>
+        <p>Že imaš račun? <a href="{{ url_for('prijava') }}">Prijavi se tukaj</a>.</p>
+    </div>
+
+    <script>
+        function posljiRegistracijo() {
+            const uporabnik = document.getElementById('uporabnik').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const geslo = document.getElementById('geslo').value.trim();
+            const potrdiGeslo = document.getElementById('potrdiGeslo').value.trim();
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            if (uporabnik === '' || geslo === '' || potrdiGeslo === '') {
+                errorMessage.textContent = 'Izpolnite vsa polja.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            if (!email || !uporabnik || !geslo || !potrdiGeslo) {
+                errorMessage.textContent = 'Izpolnite vsa polja.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            if (geslo !== potrdiGeslo) {
+                errorMessage.textContent = 'Gesli se ne ujemata.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            $.ajax({
+                url: '/registracija',
+                type: 'POST',
+                data: {
+                    uporabnik: uporabnik,
+                    email: email,
+                    geslo: geslo
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        successMessage.textContent = 'Registracija uspešna! Preusmerjam...';
+                        successMessage.style.display = 'block';
+                        setTimeout(() => {
+                            window.location.href = '/prijava';
+                        }, 2000);
+                    } else {
+                        errorMessage.textContent = response.error;
+                        errorMessage.style.display = 'block';
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Napaka:', xhr.responseText);
+                    errorMessage.textContent = 'Napaka pri registraciji. Poskusite znova.';
+                    errorMessage.style.display = 'block';
+                }
+            });
+        }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    posljiRegistracijo();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
