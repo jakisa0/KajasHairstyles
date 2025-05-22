@@ -4,11 +4,14 @@ body {
     background-repeat: repeat;
 }
 header{
-    display: flex;
     justify-content: left;
-    align-items: center;
     background: linear-gradient(90deg, rgba(245, 245, 247, 0.8) 10%, rgba(249, 231, 236, 0.3 ) 100%);
     gap: 40px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 header p{
@@ -111,7 +114,7 @@ textarea {
     max-width: 900px;
     margin: 40px auto;
     padding: 10px;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     border: 1px solid #ccc;
     height: 600px;
 }
@@ -287,4 +290,68 @@ textarea {
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
+}
+
+.burger {
+    display: none;
+    font-size: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+}
+
+nav button {
+    padding: 10px;
+}
+
+.desktop-pozdrav {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .burger {
+        display: block;
+    }
+
+    nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: 10px;
+        background-color: #f8f8f8;
+    }
+
+    nav.show {
+        display: flex;
+    }
+
+    nav button {
+        width: 100%;
+        text-align: left;
+    }
+
+    .prijava {
+        width: 100%;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .desktop-pozdrav {
+        display: none;
+    }
+
+    .mobilna-prijava {
+        display: block;
+    }
+}
+
+.mobilna-prijava {
+    display: none;
 }

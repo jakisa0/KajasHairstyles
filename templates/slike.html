@@ -8,26 +8,43 @@
 <body>
     <header>
         <a href="/"><img src="../static/slike/logoTransparent.png" height="150" alt="logo"></a>
-        <nav>
-            <button type="button" onclick="window.location.href='/'">Domov</button>
-            <button type="button" onclick="window.location.href='/rezervacija'">Rezerviraj termin</button>
+
+        <button class="burger" onclick="toggleMenu()">☰</button>
+
+        <nav id="navigacija">
+            <button onclick="window.location.href='/'">Domov</button>
+            <button onclick="window.location.href='/rezervacija'">Rezerviraj termin</button>
             <button onclick="window.location.href='/slike'">Galerija</button>
-            <button type="button" onclick="window.location.href='/onas'">O nas</button>
-            <button type="button" onclick="window.location.href='/blog'">Blog</button>
+            <button onclick="window.location.href='/onas'">O nas</button>
+            <button onclick="window.location.href='/blog'">Blog</button>
             {% if session.get('admin') %}
-                <button type="button" onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
-                <button type="button" onclick="window.location.href='/vse-rezervacije'">Vse rezervacije</button>
+                <button onclick="window.location.href='/vsa-sporocila'">Vsa sporočila</button>
+                <button onclick="window.location.href='/vse-rezervacije'">Vse rezervacije</button>
+            {% endif %}
+            
+            {% if 'uporabnik' in session %}
+                <button class="mobilna-prijava" onclick="window.location.href='{{ url_for('odjava') }}'">Odjava</button>
+            {% else %}
+                <button class="mobilna-prijava" onclick="window.location.href='{{ url_for('prijava') }}'">Prijava</button>
             {% endif %}
         </nav>
+
         <div class="prijava">
             {% if 'uporabnik' in session %}
-                <p>Pozdravljen, {{ session['uporabnik'] }}!</p>
+                <p class="desktop-pozdrav">Pozdravljen, {{ session['uporabnik'] }}!</p>
                 <a href="{{ url_for('odjava') }}">Odjava</a>
             {% else %}
                 <a href="{{ url_for('prijava') }}">Prijava</a>
             {% endif %}
         </div>
     </header>
+    <script>
+    function toggleMenu() {
+        const nav = document.getElementById('navigacija');
+        nav.classList.toggle('show');
+    }
+    </script>
+    
     <main>
         <div class="filter-gumbi">
             <button onclick="filtriraj('vse')">Vse</button>
