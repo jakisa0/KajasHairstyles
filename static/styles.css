@@ -164,6 +164,10 @@ textarea {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
+.galerija-telefon {
+    display: none;
+}
+
 .rezerviraj-gumb {
     background-color: #f48fb1;
     color: white;
@@ -349,6 +353,25 @@ nav button {
 
     .mobilna-prijava {
         display: block;
+    }
+    .galerija img {
+        width: 80%;
+    }
+    .galerija-desktop {
+        display: none;
+    }
+
+    .galerija-telefon {
+        display: block;
+    }
+
+    .galerija-scroll {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+    .blog-slika {
+        width: 98%;
+        height: auto;
     }
 }
 
