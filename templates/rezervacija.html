@@ -94,27 +94,29 @@
     {% endif %}
 
     <hr>
-
-    <h2>Prosti termini</h2>
-    {% for termin in termini %}
-        <h3>{{ termin.datum }}</h3>
-        <ul>
-            {% for ura in termin.ure %}
-                <li>
-                    {{ ura }}
-                    {% if session.get('admin') %}
-                        <form method="POST" action="/odstrani-termin" style="display:inline;">
-                            <input type="hidden" name="datum" value="{{ termin.datum }}">
-                            <input type="hidden" name="ura" value="{{ ura }}">
-                            <button type="submit" onclick="return confirm('Si prepričan, da želiš odstraniti ta termin?')">🗑</button>
-                        </form>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Ni prostih terminov.</p>
-    {% endfor %}
+    
+    {% if session.get('admin') %}
+        <h2>Prosti termini</h2>
+        {% for termin in termini %}
+            <h3>{{ termin.datum }}</h3>
+            <ul>
+                {% for ura in termin.ure %}
+                    <li>
+                        {{ ura }}
+                        {% if session.get('admin') %}
+                            <form method="POST" action="/odstrani-termin" style="display:inline;">
+                                <input type="hidden" name="datum" value="{{ termin.datum }}">
+                                <input type="hidden" name="ura" value="{{ ura }}">
+                                <button type="submit" onclick="return confirm('Si prepričan, da želiš odstraniti ta termin?')">🗑</button>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Ni prostih terminov.</p>
+        {% endfor %}
+    {% endif %}
 
     {% if not session.get('admin') %}
         <h2>Rezerviraj termin</h2>
@@ -246,5 +248,28 @@
             return true;
         }
     </script>
+    <footer class="footer">
+        <div class="footer-kolona">
+            <h3>Kajas Hairstyles</h3>
+            <p>Vaš salon za modne, sveže in profesionalne frizure.</p>
+        </div>
+        <div class="footer-kolona">
+            <h4>Kontakt</h4>
+            <p>Email: info@kajas-hairstyles.si</p>
+            <p>Telefon: +386 40 123 456</p>
+            <p>Lokacija: Borovška cesta 80, 4280 Kranjska Gora</p>
+        </div>
+        <div class="footer-kolona">
+            <h4>Povezave</h4>
+            <ul>
+                <li><a href="/">Domov</a></li>
+                <li><a href="/rezervacija">Rezervacija</a></li>
+                <li><a href="/slike">Galerija</a></li>
+                <li><a href="/onas">O nas</a></li>
+                <li><a href="/blog">Blog</a></li>
+            </ul>
+        </div>
+    </footer>
+    <div class="footer-copy">&copy; 2025 Kajas Hairstyles. Vse pravice pridržane.</div>
 </body>
 </html>

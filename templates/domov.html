@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sl">
+<html lang="sl" class="scroll-home">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +7,8 @@
     <title>Kajas Hairstyles</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <header>
+<body class="scroll-home">
+    <header class="domov-header">
         <a href="/"><img src="../static/slike/logoTransparent.png" height="150" alt="logo"></a>
 
         <button class="burger" onclick="toggleMenu()">☰</button>
@@ -41,58 +41,69 @@
         </div>
     </header>
 
+    <main>
+        <section class="slide slide-right" style="background-image: url('../static/slike/slide1.png');">
+            <div class="text-box">
+                <h1>Dobrodošli pri<br>Kajas Hairstyles</h1>
+            </div>
+        </section>
 
-    <h1>Dobrodošli pri Kajas Hairstyles</h1>
-    <p class="podnaslov">Vaš salon za modne, sveže in profesionalne frizure.</p>
-    <div class="galerija-desktop">
-        <div class="galerija">
-            <img src="/static/slike/haircut1.jpg" alt="Frizura 1">
-            <img src="/static/slike/haircut2.jpg" alt="Frizura 2">
-            <img src="/static/slike/haircut3.jpg" alt="Frizura 3">
-        </div>
-        <div class="galerija">
-            <img src="/static/slike/haircut4.jpg" alt="Frizura 1">
-            <img src="/static/slike/haircut5.jpg" alt="Frizura 2">
-            <img src="/static/slike/haircut6.jpg" alt="Frizura 3">
-        </div>
-        <div class="galerija">
-            <img src="/static/slike/haircut7.jpg" alt="Frizura 1">
-            <img src="/static/slike/haircut8.jpg" alt="Frizura 2">
-            <img src="/static/slike/haircut9.jpg" alt="Frizura 3">
-        </div>
-    </div>
+        <section class="slide slide-left" style="background-image: url('../static/slike/slide2.png');">
+            <div class="text-box">
+                <p>Vaš salon za modne, sveže in<br>profesionalne frizure.</p>
+            </div>
+        </section>
 
-    <div class="galerija-telefon container-fluid px-0">
-        <div class="d-flex overflow-auto flex-nowrap galerija-scroll py-3">
-            <img src="/static/slike/haircut1.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 1">
-            <img src="/static/slike/haircut2.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 2">
-            <img src="/static/slike/haircut3.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 3">
-            <img src="/static/slike/haircut4.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 4">
-            <img src="/static/slike/haircut5.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 5">
-            <img src="/static/slike/haircut6.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 6">
-            <img src="/static/slike/haircut7.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 7">
-            <img src="/static/slike/haircut8.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 8">
-            <img src="/static/slike/haircut9.jpg" class="img-fluid mx-2" style="max-height: 250px;" alt="Frizura 9">
-        </div>
-    </div>
+        <section class="slide slide-right" style="background-image: url('../static/slike/slide3.png');">
+            <div class="text-box">
+                <h1>Naše storitve</h1>
+                <ul>
+                    <li>Moško striženje (fade, classic, buzz cut...)</li>
+                    <li>Žensko striženje in oblikovanje</li>
+                    <li>Barvanje, balayage, prameni</li>
+                    <li>Nega las in keratinsko ravnanje</li>
+                </ul>
+            </div>
+        </section>
 
-    <h2>Naše storitve</h2>
-    <ul>
-        <li>Moško striženje (fade, classic, buzz cut...)</li>
-        <li>Žensko striženje in oblikovanje</li>
-        <li>Barvanje, balayage, prameni</li>
-        <li>Nega las in keratinsko ravnanje</li>
-    </ul>
+        <section class="slide slide-right" style="background-image: url('../static/slike/slide4.png');">
+            <a href="/rezervacija">
+            <button class="rezerviraj-gumb">Rezerviraj svoj termin zdaj</button>
+            </a>
+        </section>
+    </main>
+        
+        <script>
+        function toggleMenu() {
+            const nav = document.getElementById('navigacija');
+            nav.classList.toggle('show');
+        }
+        </script>
+        <script>
+            let lastScroll = 0;
+            const header = document.querySelector('.domov-header');
 
-    <a href="/rezervacija">
-        <button class="rezerviraj-gumb">Rezerviraj svoj termin zdaj</button>
-    </a>
-    
-    <script>
-    function toggleMenu() {
-        const nav = document.getElementById('navigacija');
-        nav.classList.toggle('show');
-    }
-    </script>
+            if (header) {
+                window.addEventListener('scroll', () => {
+                    const currentScroll = window.pageYOffset;
+
+                    // Scroll dol -> skrij, scroll gor -> pokaži
+                    if (currentScroll > lastScroll && currentScroll > 100) {
+                        header.classList.add('hide');
+                    } else {
+                        header.classList.remove('hide');
+                    }
+
+                    // Dodaj zamegljen background, ko scrollamo dol
+                    if (currentScroll > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+
+                    lastScroll = currentScroll;
+                });
+            }
+        </script>
 </body>
 </html>
